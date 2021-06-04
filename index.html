@@ -252,6 +252,7 @@
 </head>
 
 <body>
+    <a href="https://github.com/puerdon/paiwan_vocab"><img style="position: absolute; top: 0; right: 0; border: 0; z-index:100;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
     <div id="layout" class="pure-g" v-cloak>
         <div id="top" class="pure-u-1">
             <h1 class="brand-title">排灣語千詞表檢索</h1>
@@ -275,7 +276,7 @@
                     <h1 class="content-subhead">主題分類</h1>
                     <button class="pure-button but s-but" @click="selectAllTopics">全選</button>
                     <button class="pure-button but s-but" @click="deselectAllTopics">取消全選</button>
-                    <br/>
+                    <br />
                     <button v-for="d in topics" class="pure-button but" :class="{ 'pure-button-primary': d.enabled }" @click="onButtonClicked(d)">{{ d.name }}</button>
                 </section>
             </div>
@@ -284,20 +285,11 @@
             <div>
                 <!-- A wrapper for all the blog posts -->
                 <div class="posts">
-                    <!-- <section class="post">
-                        <h1 class="content-subhead">請點選方言別</h1>
-                        <button v-for="dialect to dialects" class="pure-button">{{ dialect.text }}</button>
-                        <button v-for="dialect in dialects" class="pure-button but" :class="{ 'pure-button-primary': dialect.enabled }" @click="onButtonClicked(dialect)">{{ dialect.name }}</button>
-                        <h1 class="content-subhead">請選擇難易度</h1>
-                        <button v-for="d in difficuties" class="pure-button but" :class="{ 'pure-button-primary': d.enabled }" @click="onButtonClicked(d)">{{ d.name }}</button>
-                        <h1 class="content-subhead">主題分類</h1>
-                        <button v-for="d in topics" class="pure-button but" :class="{ 'pure-button-primary': d.enabled }" @click="onButtonClicked(d)">{{ d.name }}</button>
-                    </section> -->
+                  
                     <section class="post">
-                        <h3>
-                            總筆數：{{ filterResult(data).length }}
-                        </h3>
-                        <!-- <button @click="download">export</button> -->
+                        <div>
+                            <span>總筆數：{{ filterResult(data).length }}</span>
+                        <button @click="download" class="button but" :class="{'pure-button-disabled': !windowLoaded}">匯出成pdf</button>
                         <table class="pure-table" id="result">
                             <thead>
                                 <tr>
@@ -345,9 +337,16 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> -->
     <script src="https://unpkg.com/jspdf-autotable@3.5.14/dist/jspdf.plugin.autotable.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/vxe-table-plugin-export-pdf/fonts/source-han-sans-normal.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/pdfmake-chinese@0.0.8/pdfmake.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/pdfmake-chinese@0.0.8/vfs_fonts.js"></script> -->
+    <!-- <script src="./normal.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vxe-table-plugin-export-pdf/fonts/source-han-sans-normal.js" onload="console.log('cool')" async></script>
+
     <script>
-    window.jsPDF = window.jspdf.jsPDF;
-    const doc = new jsPDF();
+</script>
+
+<script>
+    
 
     var app2 = new Vue({
         el: '#layout',
@@ -365,12 +364,16 @@
                 { name: "高級", enabled: false }
             ],
             topics: [],
-            data: []
+            data: [],
+            windowLoaded: false
 
         },
         methods: {
             onButtonClicked: function(x) {
-                x.enabled = !x.enabled
+                x.enabled = !x.enabled;
+            },
+            onWindowLoad: function() {
+                this.windowLoaded = true;
             },
             filterResult: function(data) {
                 console.log(this.selectedTopics);
@@ -396,12 +399,37 @@
                 }
             },
             download: function() {
+                window.jsPDF = window.jspdf.jsPDF;
 
-                console.log(doc);
+                const doc = new jsPDF();
                 doc.addFont('SourceHanSans-Normal.ttf', 'SourceHanSans-Normal', 'normal');
                 doc.setFont('SourceHanSans-Normal');
-                doc.autoTable({ html: '#result' });
-                doc.save('table.pdf');
+                doc.autoTable({ html: '#result',styles: {font:'SourceHanSans-Normal', fontStyle: 'normal'} });
+
+                let dialects, difficuties, topics = 'aa';
+
+                if (this.selectedDialacts.length === 1) {
+                    dialects = this.selectedDialacts[0][0]
+                } else {
+                    dialects = this.selectedDialacts.map(d => d[0]).join('-')
+                }
+
+                console.log(this.selectedDialacts);
+
+                if (this.selectedDifficulties.length === 1) {
+                    difficuties = this.selectedDifficulties[0].replace("級", "")
+                } else {
+
+                    difficuties = this.selectedDifficulties.map(d => d.replace("級", "")).join('-')
+                }
+
+                if (this.selectedTopics.length === 1) {
+                    topics = this.selectedTopics[0];
+                } else {
+                    topics = "多類別";
+                }
+
+                doc.save(`${dialects}排灣語__${difficuties}級__${topics}.pdf`);
             }
         },
         created() {
@@ -416,6 +444,8 @@
 
                     console.log(topics)
                 });
+
+            window.addEventListener("load", this.onWindowLoad);
         },
         computed: {
             dataToRender: function() {
