@@ -3,34 +3,375 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>排灣語四方言千詞表</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css">
+    <style type="text/css">
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    a {
+        text-decoration: none;
+        color: rgb(61, 146, 201);
+    }
+
+    a:hover,
+    a:focus {
+        text-decoration: underline;
+    }
+
+    h3 {
+        font-weight: 100;
+    }
+
+    /* LAYOUT CSS */
+    .pure-img-responsive {
+        max-width: 100%;
+        height: auto;
+    }
+
+    #layout {
+        padding: 0;
+    }
+
+    .header {
+        text-align: center;
+        top: auto;
+        margin: 3em auto;
+    }
+
+    .sidebar {
+        background: rgb(61, 79, 93);
+        color: #fff;
+    }
+
+    .brand-title,
+    .brand-tagline {
+        margin: 0;
+    }
+
+    .brand-title {
+        text-transform: uppercase;
+    }
+
+    .brand-tagline {
+        font-weight: 300;
+        color: rgb(176, 202, 219);
+    }
+
+    .nav-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .nav-item {
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+    }
+
+    .nav-item a {
+        background: transparent;
+        border: 2px solid rgb(176, 202, 219);
+        color: #fff;
+        margin-top: 1em;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        font-size: 85%;
+    }
+
+    .nav-item a:hover,
+    .nav-item a:focus {
+        border: 2px solid rgb(61, 146, 201);
+        text-decoration: none;
+    }
+
+    .content-subhead {
+        text-transform: uppercase;
+        color: #aaa;
+        border-bottom: 1px solid #eee;
+        padding: 0.4em 0;
+        font-size: 80%;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+    }
+
+    .content {
+        padding: 2em 1em 0;
+    }
+
+    .post {
+        padding-bottom: 2em;
+    }
+
+    .post-title {
+        font-size: 2em;
+        color: #222;
+        margin-bottom: 0.2em;
+    }
+
+    .post-avatar {
+        border-radius: 50px;
+        float: right;
+        margin-left: 1em;
+    }
+
+    .post-description {
+        font-family: Georgia, "Cambria", serif;
+        color: #444;
+        line-height: 1.8em;
+    }
+
+    .post-meta {
+        color: #999;
+        font-size: 90%;
+        margin: 0;
+    }
+
+    .post-category {
+        margin: 0 0.1em;
+        padding: 0.3em 1em;
+        color: #fff;
+        background: #999;
+        font-size: 80%;
+    }
+
+    .post-category-design {
+        background: #5aba59;
+    }
+
+    .post-category-pure {
+        background: #4d85d1;
+    }
+
+    .post-category-yui {
+        background: #8156a7;
+    }
+
+    .post-category-js {
+        background: #df2d4f;
+    }
+
+    .post-images {
+        margin: 1em 0;
+    }
+
+    .post-image-meta {
+        margin-top: -3.5em;
+        margin-left: 1em;
+        color: #fff;
+        text-shadow: 0 1px 1px #333;
+    }
+
+    .footer {
+        padding: 1em 0;
+    }
+
+    .footer a {
+        color: #ccc;
+        font-size: 80%;
+    }
+
+    .footer .pure-menu a:hover,
+    .footer .pure-menu a:focus {
+        background: none;
+    }
+
+    @media (min-width: 48em) {
+        .content {
+            padding: 2em 3em 0;
+            margin-left: 25%;
+        }
+
+        .header {
+            margin: 80% 2em 0;
+            text-align: right;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+        }
+
+        .footer {
+            text-align: center;
+        }
+    }
+    </style>
+    <style type="text/css">
+    button {
+        margin-right: 1em;
+        margin-bottom: 0.5em;
+    }
+    </style>
 </head>
 
 <body>
+    <div id="layout" class="pure-g">
+        <div class="sidebar pure-u-1 pure-u-md-1-4">
+            <div class="header">
+                <h1 class="brand-title">排灣語單詞</h1>
+                <h2 class="brand-tagline">按方言別、難易度分類</h2>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="pure-button" href="http://purecss.io">Pure</a>
+                        </li>
+                    </ul>
+                </nav>
+                <section class="post">
+                        <h1 class="content-subhead">請點選方言別</h1>
+                        <!-- <button v-for="dialect to dialects" class="pure-button">{{ dialect.text }}</button> -->
+                        <button v-for="dialect in dialects" class="pure-button" :class="{ 'pure-button-primary': dialect.enabled }" @click="onButtonClicked(dialect)">{{ dialect.name }}</button>
+                        <h1 class="content-subhead">請選擇難易度</h1>
+                        <button v-for="d in difficuties" class="pure-button" :class="{ 'pure-button-primary': d.enabled }" @click="onButtonClicked(d)">{{ d.name }}</button>
+                        <h1 class="content-subhead">主題分類</h1>
+                        <button v-for="d in topics" class="pure-button" :class="{ 'pure-button-primary': d.enabled }" @click="onButtonClicked(d)">{{ d.name }}</button>
+                    </section>
+            </div>
+        </div>
+        <div class="content pure-u-1 pure-u-md-3-4">
+            <div>
+                <!-- A wrapper for all the blog posts -->
+                <div class="posts">
+                    <section class="post">
+                        <h1 class="content-subhead">請點選方言別</h1>
+                        <!-- <button v-for="dialect to dialects" class="pure-button">{{ dialect.text }}</button> -->
+                        <button v-for="dialect in dialects" class="pure-button" :class="{ 'pure-button-primary': dialect.enabled }" @click="onButtonClicked(dialect)">{{ dialect.name }}</button>
+                        <h1 class="content-subhead">請選擇難易度</h1>
+                        <button v-for="d in difficuties" class="pure-button" :class="{ 'pure-button-primary': d.enabled }" @click="onButtonClicked(d)">{{ d.name }}</button>
+                        <h1 class="content-subhead">主題分類</h1>
+                        <button v-for="d in topics" class="pure-button" :class="{ 'pure-button-primary': d.enabled }" @click="onButtonClicked(d)">{{ d.name }}</button>
+                    </section>
+                    <section class="post">
+                        <table class="pure-table">
+                            <thead>
+                                <tr>
+                                    <th>序號</th>
+                                    <th>編號</th>
+                                    <th>分類</th>
+                                    <th>中文</th>
+                                    <th>族語</th>
+                                    <th>備註</th>
+                                    <th>級別</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(x, index) in filterResult(data)">
+                                    <td>{{index + 1}}</td>
+                                    <td>{{x.編號}}</td>
+                                    <td>{{x.分類}}</td>
+                                    <td>{{x.中文}}</td>
+                                    <td>{{x.族語}}</td>
+                                    <td>{{x.備註}}</td>
+                                    <td>{{x.級別}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <!-- A single blog post -->
+                    <section class="post">
+                        
+                        <div class="post-description">
+                            <p>
+                                Yesterday at CSSConf, we launched Pure – a new CSS l
+                            </p>
+                        </div>
+                    </section>
+                </div>
+                
+
+                <div class="footer">
+                    <div class="pure-menu pure-menu-horizontal">
+                        <ul>
+                            <li class="pure-menu-item"><a href="http://purecss.io/" class="pure-menu-link">About</a></li>
+                            <li class="pure-menu-item"><a href="http://twitter.com/yuilibrary/" class="pure-menu-link">Twitter</a></li>
+                            <li class="pure-menu-item"><a href="http://github.com/pure-css/pure/" class="pure-menu-link">GitHub</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
     <script>
-    function loadJSON(callback) {
+    var app2 = new Vue({
+        el: '#layout',
+        data: {
+            dialects: [
+                { name: "東排灣語", enabled: true },
+                { name: "北排灣語", enabled: false },
+                { name: "南排灣語", enabled: false },
+                { name: "中排灣語", enabled: false }
+            ],
+            difficuties: [
+                { name: "初級", enabled: false },
+                { name: "中級", enabled: true },
+                { name: "中高級", enabled: false },
+                { name: "高級", enabled: false }
+            ],
+            topics: [],
+            data: {
+                "東排灣語": [],
+                "北排灣語": [],
+                "中排灣語": [],
+                "南排灣語": [],
 
-        var xobj = new XMLHttpRequest();
-        xobj.overrideMimeType("application/json");
-        xobj.open('GET', 'data.json', true); // Replace 'my_data' with the path to your file
-        xobj.onreadystatechange = function() {
-            if (xobj.readyState == 4 && xobj.status == "200") {
-                // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-                callback(xobj.responseText);
             }
-        };
-        xobj.send(null);
-    }
 
-    function init() {
-        loadJSON(function(response) {
-            // Parse JSON string into object
-            var actual_JSON = JSON.parse(response);
-            console.log(actual_JSON);
-        });
-    }
+        },
+        methods: {
+            onButtonClicked: function(x) {
+                x.enabled = !x.enabled
+            },
+            filterResult: function(data) {
+                console.log(this.selectedTopics)
+                let result = [];
+                for (var dialect of this.selectedDialacts) {
+                    result = result.concat(data[dialect].filter(d => this.selectedDifficulties.includes(d['級別']))).filter(d => this.selectedTopics.includes(d['分類']))
+                }
+                return result;
+            }
+        },
+        created() {
+            // Simple GET request using fetch
+            fetch("/data.json")
+                .then(response => response.json())
+                .then(data => {
+                    this.data = data;
+                    console.log('cook');
+                    let topics = [...new Set(data['東排灣語'].map(d => d.分類))];
+                    this.topics = topics.map(d => ({name: d, enabled: false}));
 
-    init();
+                    console.log(topics)
+                });
+        },
+        computed: {
+            dataToRender: function() {
+                // var result = [];
+                for (var dialect of this.selectedDialacts) {
+                    console.log(Array.isArray(this.data[dialect]))
+                    return this.data[dialect]
+                }
+            },
+            selectedDialacts: function() {
+                return this.dialects.filter(d => d.enabled).map(d => d.name)
+            },
+            selectedDifficulties: function() {
+                return this.difficuties.filter(d => d.enabled).map(d => d.name)
+            },
+            selectedTopics: function() {
+                return this.topics.filter(d => d.enabled).map(d => d.name)
+            }
+        }
+    })
     </script>
 </body>
 
